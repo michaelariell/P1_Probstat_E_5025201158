@@ -42,162 +42,153 @@ varians = (n-p)/(p^2)
 varians
 
 ## Soal 2
-### A. Diket 20 pasien, prob 0.2, dan s = 4 pasien. Peluang sembuh 4 pasien tersebut adalah?
+### a. peluang sembuh 4 pasien
 Dapat menggunakan fungsi dbinom()
-n = 20
-p = 0.2
-s = 4
-peluang <- dbinom(s, n, p)
-peluang
+a <- dbinom(x=4,20,0.2)
+a
 
 ### B. Gambarkan grafik histogram dari kasus tersebut
-Dapat menggunakan bantuan fungsi plot()
-n = 20
-p = 0.2
-x = 0:20
-plot(x, dbinom(x, n, p),
-     type = 'h',
-     main = 'Histogram Distribusi Binomial',
-     xlab = 'Sukses',
-     ylab = 'Probabilitas',
-     col = 'green',
-     lwd = 3
-)
+Dapat menggunakan bantuan fungsi hist()
+data <- rbinom(20,20,0.2)
+hist(data,
+     xlim = c(0,8))
 
 ### C. Mencari nilai rataan dan varians dari distirbusi binom
-Menggunakan rumus yang sama dengan nomor sebelumnya
-n = 20
-p = 0.2
-rataan = n*(p)
-rataan
+Menggunakan rumus mencari peluang failure nya dengan mean dan variance theorytical
+n=20 ->jumlah pasien
+p=0.2 ->peluang
+q=1-p ->peluang failure nya
 
-varians = n*(p)*(1-(p))
-varians
+me=n*p //mean theorytical
+me
+
+va=n*p*q //variance theorytical
+va
 
 ## Soal 3
 ### A. Berapa peluang bahwa 6 bayi akan lahir dirumah sakit ini besok?
-Diket rata-rata sebanyak 4.5 dan x = 6 yaitu bayi akan lahir. Untuk menghitung dapat menggunakan fungsi dpois()
-rata = 4.5
+Diketahui rata-rata sebanyak 4.5 dan x = 6 yaitu bayi akan lahir. Untuk menghitung dapat menggunakan fungsi dpois()
 x = 6
-
-peluang <- dpois(x, rata)
-peluang
+lambda = 4.5
+dpois(x,lambda)
 
 ### B. simulasikan dan buatlah histogram kelahiran 6 bayi akan lahir dirumah sakit ini selama setahun (n = 365)
-Dapat menggunakan fungsi hist() seperti nomor sebelumnya, dengan n diubah menjadi 365 yaitu hari dalama setahun
-rata = 4.5
-n = 365
-set.seed(0)
-hist(rpois(n, rata),
-     main = "Histogram Poisson Bayi",
-     xlim = c(0,20),
-     col = "green",
-)
+Dapat menggunakan fungsi geom_histogram() dan scale_x_continuous()+labs()+theme_bw(), dengan n diubah menjadi 365 yaitu hari dalama setahun
+set.seed(2)
+
+babies <- data.frame('data' = rpois(365, 4.5))
+
+babies %>% ggplot() +
+  geom_histogram(aes(x = data,
+                     y = stat(count / sum(count)),
+                     fill = data == 6),
+                 binwidth = 1,
+                 color = 'black',) +
+  scale_x_continuous(breaks = 0:10) + 
+  labs(x = 'Number of babies born per period',
+       y = 'Proportion',
+       title = '365 simulated births in a hospital with Pois(lambda = 4.5)') +
+  theme_bw()
 
 ### C. Perbandingan a dan b
-Peluang kelahiran dalam 1 tahun (poin b) lebih rendah daripada kelahiran pada esok harinya. Akan tetapi probabilitas/peluang yang terjadi tidak bebeda signifikan
+dapat dilihat bahwa hasil simulasi nya sekitar 11.5% (berdasarkan perhitungan dibawah), sedangkan nilai exact nya yaitu 12,8% 
+yang artinya sesuai karena nilai simulasi mendekati nilai exact
+
+babies %>% dplyr::summarize(six_babies = sum(babies$data == 6) / n())
 
 ### D. Mencari nilai rataan dan varians dari distribusi poisson
-rata = 4.5
 
-rataan = varians = rata
-rataan
-varians
+lambda
 
 ## Soal 4
 ### A. Fungsi Probabilitas dari Distribusi Chi-Square
-Diketahui nilaix = 2 dan v = 10. Kemudian dicari dengan bantuan fungsi dchisq
+Diketahui nilaix = 2 dan df = 10. Kemudian dicari dengan bantuan fungsi dchisq()
 x = 2
-v = 10
-
-p <- dchisq(x, v)
-p
+df = 10
+dchisq(x , df)
 
 ### B. Histogram dari DistribusiChi-Square dengan 100 data random
 Dapat menggunakan fungsi hist() seperti nomor sebelumnya
-v = 10
-x = 100
+p <- rchisq(100,df)
 
-hist(rchisq(n, v), 
-     main = "Histogram Chi Square",
-     xlim = c(0,20),
-     col = "green",
-     xlab = "X",
-     ylab = "V",
-)
+hist(p,
+     freq = FALSE,
+     xlim = c(0,30),
+     ylim = c(0,0.2),
+     main = "Histogram Of Chisquare")
 
 ### C. Mencari nilai rataan dan varians dari distribusi Chi-Square
-v = 10
 
-mean = v
-mean
+mean1 = df
+mean1
 
-varians = 2*v
-varians
+var1 = 2*df
+var1
 
 ## Soal 5
 ### A. Fungsi Probabilitas dari Distribusi Exponensial
 lambda = 3
 
-set.seed(1)
-rnorm(1)
-
-p <- rexp(1,lambda)
-p
+jika bilangan random sejumlah n=10
+rexp(10,rate = lambda)  jika bilangan random sejumlah n=10
 
 ### B. Histogramdari Distribusi Exponensial untuk 10, 100, 1000 dan 10000 bilangan random
-lambda = 3
-
+//n = 10
 set.seed(1)
-hist(rexp(10,lambda), 
-     main = "Histogram 10 Random")
-hist(rexp(100,lambda), 
-     main = "Histogram 100 Random")
-hist(rexp(1000,lambda), 
-     main = "Histogram 1000 Random")
-hist(rexp(10000,lambda), 
-     main = "Histogram 10000 Random")
+x1 <- rexp(10,rate = lambda)
+hist(x1,
+     main = "Histogram Exponesial if n = 10")
+//n = 100
+set.seed(1)
+x2 <- rexp(100,rate = lambda)
+hist(x2,
+     ylim = c(0,50),
+     xlim = c(0,2),
+     main = "Histogram Exponesial if n = 100")
+//n=1000
+set.seed(1)
+x3 <- rexp(1000,rate = lambda)
+hist(x3,
+     ylim = c(0,500),
+     xlim = c(0,3),
+     main = "Histogram Exponesial if n = 1000")
+//n=10000
+set.seed(1)
+x4 <- rexp(10000,rate = lambda)
+hist(x4,
+     ylim = c(0,5000),
+     xlim = c(0,4),
+     main = "Histogram Exponesial if n = 10000")
 
-### C. Mencari nilai rataan dan varians dari distribusi Exponensial dengan n = 100 dan λ = 3
-lambda = 3
+### C. Mencari nilai rataan dan varians untuk n = 100 dan lamd = 3
 n = 100
-set.seed(1)
-
-rataan = mean(rexp(n,lambda))
-rataan
-
-varians = (sd(rexp(n,lambda)))^2
-varians
+lamd = 3
+data <- rexp(n, rate = lamd)
+avg <- mean(data)
+avg
+va <- var(data)
+va
 
 ## Soal 6
 ### A. Fungsi Probabilitas dari Distribusi Normal P(X1 ≤ x ≤ X2), hitungZ-Score Nya dan plot data generate randomnya dalam bentuk grafik. Petunjuk(gunakan fungsi plot()). 
 n = 100
-mean = 50
-sd = 8
+m = 50
+std = 8
 
-set.seed(1)
-zscore = rnorm(n, mean, sd)
-disnorm
-summary(zscore)
+data <- rnorm(100,50,8)
+rata_rata <- mean(data)
+x1 <- floor(mean(data))
+x2 <- round(mean(data))
 
-x1 = runif(1, min(zscore), mean)
-x2 = runif(1, mean, max(zscore))
-p1 = pnorm(x1, mean, sd)
-p2 = pnorm(x2, mean, sd)
-x1
-x2
-p1
-p2
-plot(zscore)
+z_scores <- (data - mean(data) / sd(data))
+
+plot(z_scores, type = "o", col="red")
 
 ### B. Generate Histogramdari DistribusiNormal dengan breaks 50 dan format penamaan sesuai soal
-breaks = 50
-
-hist(zscore, breaks,
-     main = "5025201109_Mohammad Firman Fardiansyah_Probstat_D_DNhistogram",
-     col = "green"
-)
+x <- rnorm(100,50,8)
+hist(x,
+     breaks = 50,
+     main = "5025201158_Michael Ariel Manihuruk_Probstat_E_DNhistogram")
 
 ### C. NilaiVarian (σ²) dari hasil generate randomnilaiDistribusiNormal
-varians = (sd(zscore))^2
-varians
+var(x)
