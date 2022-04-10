@@ -3,11 +3,13 @@
 ## Soal 1
 ### A. Peluang penyurvei bertemu orang yang tidak menghadiri acara vaksinasi. Ketika diketikahui x=3 dan p=0.2
 Dapat diselesaikan dengan bantuan fungsi dgeom(). Dengan x adalah orang yang tidak ikut acara vaksinasi dan p  merupakan probabilitas keberhasilan pertama peserta vaksinasi
+...
 p = 0.2
 x = 3
 
 Peluang <- dgeom(x, p)
 Peluang
+...
 
 ### B. Mencari mean dari 10000 data random, prob = 0.20, dan X=3
 Dapat menggunakan fungsi rgeom() untuk mendapatkan data random sebanyak n
